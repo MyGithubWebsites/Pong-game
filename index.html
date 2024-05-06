@@ -1,19 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pong Game</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pong Game</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-color: black;
+    }
+
+    .paddle {
+      width: 10px;
+      height: 80px;
+      position: absolute;
+      background: white;
+    }
+
+    #leftPaddle {
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #rightPaddle {
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #ball {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      background: red;
+      border-radius: 50%;
+    }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 24px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Pong Game</h1>
-    <div id="pong">
-        <div id="paddleLeft"></div>
-        <div id="paddleRight"></div>
-        <div id="ball"></div>
-    </div>
+  <div id="game">
+    <div id="leftPaddle" class="paddle"></div>
+    <div id="rightPaddle" class="paddle"></div>
+    <div id="ball"></div>
+    <div id="score">0 - 0</div>
+  </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+  <script>
+    class Paddle {
+      constructor(element) {
+        this.element = element;
+        this.y = 50;
+        this.speed = 0

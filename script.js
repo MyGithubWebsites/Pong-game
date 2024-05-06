@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const ballSpeed = 5;
   let leftScore = 0;
   let rightScore = 0;
-  let isGamePaused = false;
 
   const leftPaddle = document.getElementById('leftPaddle');
   const rightPaddle = document.getElementById('rightPaddle');
@@ -15,11 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
   let ballY = 200;
   let ballDirectionX = 1;
   let ballDirectionY = 1;
-
-  // Adding sound effects
-  const paddleHitSound = new Audio('paddle_hit.wav');
-  const wallHitSound = new Audio('wall_hit.wav');
-  const scoreSound = new Audio('score.wav');
 
   function movePaddle(paddle, direction) {
     let paddleTop = parseInt(paddle.style.top) || 0;
@@ -34,40 +28,33 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function moveBall() {
-    if (isGamePaused) return;
-
     ballX += ballDirectionX * ballSpeed;
     ballY += ballDirectionY * ballSpeed;
 
     // Check collision with walls
     if (ballY <= 0 || ballY >= 380) {
       ballDirectionY *= -1;
-      wallHitSound.play();
     }
 
     // Check collision with paddles
     if (ballX <= 20 && ballY >= parseInt(leftPaddle.style.top) && ballY <= parseInt(leftPaddle.style.top) + 80) {
       ballDirectionX *= -1;
-      paddleHitSound.play();
     }
 
     if (ballX >= 760 && ballY >= parseInt(rightPaddle.style.top) && ballY <= parseInt(rightPaddle.style.top) + 80) {
       ballDirectionX *= -1;
-      paddleHitSound.play();
     }
 
     // Check if ball has passed paddles
     if (ballX <= 0) {
       rightScore++;
       rightScoreDisplay.textContent = rightScore;
-      scoreSound.play();
       resetBall();
     }
 
     if (ballX >= 780) {
       leftScore++;
       leftScoreDisplay.textContent = leftScore;
-      scoreSound.play();
       resetBall();
     }
 
@@ -91,29 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
       movePaddle(rightPaddle, -1);
     } else if (event.key === 'ArrowDown') {
       movePaddle(rightPaddle, 1);
-    } else if (event.key === 'p' || event.key === 'P') {
-      togglePause();
     }
   });
 
-  // AI opponent
-  function moveAIPaddle() {
-    if (ballY < parseInt(rightPaddle.style.top) + 40) {
-      movePaddle(rightPaddle, -1);
-    } else if (ballY > parseInt(rightPaddle.style.top) + 40) {
-      movePaddle(rightPaddle, 1);
-    }
-  }
-
-  function togglePause() {
-    isGamePaused = !isGamePaused;
-  }
-
   function gameLoop() {
-    if (!isGamePaused) {
-      moveBall();
-      moveAIPaddle();
-    }
+    moveBall();
     requestAnimationFrame(gameLoop);
   }
 

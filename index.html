@@ -5,54 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pong Game</title>
   <style>
-    body, html {
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    #game {
-      width: 100%;
-      height: 100%;
-      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       background-color: black;
     }
-
+    #game {
+      position: relative;
+      width: 500px;
+      height: 300px;
+      background-color: #222;
+      border: 2px solid white;
+    }
     .paddle {
-      width: 10px;
-      height: 80px;
       position: absolute;
-      background: white;
+      width: 10px;
+      height: 60px;
+      background-color: white;
     }
-
     #leftPaddle {
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      left: 0;
     }
-
     #rightPaddle {
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      right: 0;
     }
-
     #ball {
+      position: absolute;
       width: 20px;
       height: 20px;
-      position: absolute;
-      background: red;
+      background-color: red;
       border-radius: 50%;
-    }
-
-    #score {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 24px;
     }
   </style>
 </head>
@@ -61,12 +47,7 @@
     <div id="leftPaddle" class="paddle"></div>
     <div id="rightPaddle" class="paddle"></div>
     <div id="ball"></div>
-    <div id="score">0 - 0</div>
   </div>
-
-  <script>
-    class Paddle {
-      constructor(element) {
-        this.element = element;
-        this.y = 50;
-        this.speed = 0
+  <script src="script.js"></script>
+</body>
+</html>

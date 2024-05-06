@@ -1,116 +1,59 @@
-class Paddle {
-  constructor(element) {
-    this.element = element;
-    this.y = 50;
-    this.speed = 0;
-    this.score = 0;
-  }
+document.addEventListener('DOMContentLoaded', function () {
+  const game = document.getElementById('game');
+  const leftPaddle = document.getElementById('leftPaddle');
+  const rightPaddle = document.getElementById('rightPaddle');
+  const ball = document.getElementById('ball');
+  const paddleHeight = 60;
+  const paddleSpeed = 5;
+  let ballX = 250;
+  let ballY = 150;
+  let ballSpeedX = 3;
+  let ballSpeedY = 3;
 
-  update() {
-    this.y += this.speed;
-    this.y = Math.max(Math.min(this.y, 100 - this.element.clientHeight), 0);
-    this.element.style.top = `${this.y}%`;
-  }
-}
-
-class Ball {
-  constructor(element) {
-    this.element = element;
-    this.x = 50;
-    this.y = 50;
-    this.speedX = Math.random() > 0.5 ? 2 : -2;
-    this.speedY = Math.random() * 2 - 1;
-  }
-
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-
-    if (this.y <= 0 || this.y >= 100) {
-      this.speedY = -this.speedY;
-    }
-
-    this.element.style.left = `${this.x}%`;
-    this.element.style.top = `${this.y}%`;
-  }
-
-  reset() {
-    this.x = 50;
-    this.y = 50;
-    this.speedX = Math.random() > 0.5 ? 2 : -2;
-    this.speedY = Math.random() * 2 - 1;
-    this.element.style.left = `${this.x}%`;
-    this.element.style.top = `${this.y}%`;
-  }
-
-  checkCollision(paddle) {
-    if (this.x <= 10 && this.y >= paddle.y && this.y <= paddle.y + 80) {
-      this.speedX = -this.speedX;
-    } else if (this.x >= 90 && this.y >= paddle.y && this.y <= paddle.y + 80) {
-      this.speedX = -this.speedX;
-    }
-  }
-}
-
-class Game {
-  constructor() {
-    this.leftPaddle = new Paddle(document.getElementById('leftPaddle'));
-    this.rightPaddle = new Paddle(document.getElementById('rightPaddle'));
-    this.ball = new Ball(document.getElementById('ball'));
-    this.scoreElement = document.getElementById('score');
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'w') {
-        this.leftPaddle.speed = -2;
-      } else if (event.key === 's') {
-        this.leftPaddle.speed = 2;
-      } else if (event.key === 'ArrowUp') {
-        this.rightPaddle.speed = -2;
-      } else if (event.key === 'ArrowDown') {
-        this.rightPaddle.speed = 2;
+  function update() {
+    // Move paddles
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'w' && parseInt(leftPaddle.style.top) > 0) {
+        leftPaddle.style.top = `${parseInt(leftPaddle.style.top) - paddleSpeed}px`;
+      }
+      if (event.key === 's' && parseInt(leftPaddle.style.top) + paddleHeight < game.clientHeight) {
+        leftPaddle.style.top = `${parseInt(leftPaddle.style.top) + paddleSpeed}px`;
+      }
+      if (event.key === 'ArrowUp' && parseInt(rightPaddle.style.top) > 0) {
+        rightPaddle.style.top = `${parseInt(rightPaddle.style.top) - paddleSpeed}px`;
+      }
+      if (event.key === 'ArrowDown' && parseInt(rightPaddle.style.top) + paddleHeight < game.clientHeight) {
+        rightPaddle.style.top = `${parseInt(rightPaddle.style.top) + paddleSpeed}px`;
       }
     });
 
-    document.addEventListener('keyup', () => {
-      this.leftPaddle.speed = 0;
-      this.rightPaddle.speed = 0;
-    });
+    // Move ball
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+    ball.style.left = `${ballX}px`;
+    ball.style.top = `${ballY}px`;
 
-    this.leftScore = 0;
-    this.rightScore = 0;
-  }
+    // Ball collision with walls
+    if (ballY <= 0 || ballY >= game.clientHeight - ball.clientHeight) {
+      ballSpeedY = -ballSpeedY;
+    }
 
-  update() {
-    this.leftPaddle.update();
-    this.rightPaddle.update();
-    this.ball.update();
-    this.ball.checkCollision(this.leftPaddle);
-    this.ball.checkCollision(this.rightPaddle);
+    // Ball collision with paddles
+    if (ballX <= leftPaddle.clientWidth && ballY + ball.clientHeight >= parseInt(leftPaddle.style.top) && ballY <= parseInt(leftPaddle.style.top) + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+    }
+    if (ballX + ball.clientWidth >= game.clientWidth - rightPaddle.clientWidth && ballY + ball.clientHeight >= parseInt(rightPaddle.style.top) && ballY <= parseInt(rightPaddle.style.top) + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+    }
 
-    if (this.ball.x <= 0) {
-      this.rightScore++;
-      this.updateScore();
-      this.ball.reset();
-    } else if (this.ball.x >= 100) {
-      this.leftScore++;
-      this.updateScore();
-      this.ball.reset();
+    // Ball out of bounds (score)
+    if (ballX <= 0 || ballX >= game.clientWidth - ball.clientWidth) {
+      ballX = 250;
+      ballY = 150;
+      ballSpeedX = 3;
+      ballSpeedY = 3;
     }
   }
 
-  updateScore() {
-    this.scoreElement.textContent = `${this.leftScore} - ${this.rightScore}`;
-  }
-
-  start() {
-    setInterval(() => {
-      this.update();
-    }, 1000 / 60); // 60 frames per second
-  }
-}
-
-const game = new Game();
-game.start();
-</script>
-</body>
-</html>
+  setInterval(update, 1000 / 60); // 60 frames per second
+});
